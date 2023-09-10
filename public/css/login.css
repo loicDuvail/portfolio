@@ -1,0 +1,43 @@
+@import url("https://fonts.googleapis.com/css2?family=Gothic+A1:wght@500&family=Lato:wght@400;700&family=Roboto:wght@300;400;500;700;900&display=swap");
+
+body {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(252, 252, 252);
+}
+
+#password-interface-container {
+    display: flex;
+    margin-top: 45vh;
+    width: clamp(250px, 30vw, 400px);
+    min-width: 300px;
+}
+
+#password-input {
+    width: 90%;
+    outline: none;
+    padding: 5px 15px;
+    font-family: "Lato", sans-serif;
+    border-radius: 5px;
+    border: 1px solid black;
+}
+
+#eye-container {
+    height: inherit;
+    width: 40px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+svg {
+    position: relative;
+    margin-bottom: 1px;
+}
+
+#password-visible-svg {
+    display: none;
+}
