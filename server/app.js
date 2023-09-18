@@ -141,6 +141,7 @@ app.post("/private-api/updateProject", (req, res) => {
     git_link,
     live_demo_link,
   } = updatedProject;
+  console.log(updatedProject);
 
   let request = `UPDATE projects SET project_name = "${project_name}",description = "${description}",what_i_learned = "${what_i_learned}",img = "${img}",git_link = "${git_link}",live_demo_link = "${live_demo_link}" WHERE id = ${id}`;
 

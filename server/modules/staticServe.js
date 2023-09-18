@@ -13,7 +13,6 @@ function serveFnGen(app) {
         app.get(`/${parent}/${file}`, (req, res) => {
           res.sendFile(absFilePath);
         });
-        console.log(`/${parent}/${file}`);
       });
     });
   };

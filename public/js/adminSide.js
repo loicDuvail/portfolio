@@ -95,12 +95,13 @@ logoutBtn.onclick = logout;
   );
   console.log(columns);
   if (columns)
-    for (const column of columns) {
-      const textarea = document.createElement("textarea");
-      textarea.className = `${column.Field}-textarea`;
-      textarea.placeholder = column.Field;
-      newProjectContainer.appendChild(textarea);
-    }
+    for (const column of columns)
+      if (column.field != "id") {
+        const textarea = document.createElement("textarea");
+        textarea.className = `${column.Field}-textarea`;
+        textarea.placeholder = column.Field;
+        newProjectContainer.appendChild(textarea);
+      }
 })();
 
 function addProject() {
