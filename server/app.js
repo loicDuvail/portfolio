@@ -107,7 +107,7 @@ app.get("/api/getProjects", (req, res) => {
 
 app.get("/api/getProjectsColumnNames", (req, res) => {
   pool.query(`DESCRIBE projects`, (error, response) => {
-    if (!error) return res.send(response[0].Field).status(200);
+    if (!error) return res.send(response).status(200);
     res.send({ error }).status(500);
     console.log(
       error +
@@ -134,7 +134,7 @@ app.post("/private-api/updateProject", (req, res) => {
   const { updatedProject } = req.body;
   const {
     id,
-    name,
+    project_name,
     description,
     what_i_learned,
     img,

@@ -89,10 +89,11 @@ logoutBtn.onclick = logout;
 
 // add new project
 
-async function generate_NewProjectMaker_Container() {
+(async function generate_NewProjectMaker_Container() {
   const fields = await fetch("/api/getProjectsColumnNames").then((response) =>
     response.json()
   );
+  console.log(fields);
   if (fields)
     for (const field of fields) {
       const textarea = document.createElement("textarea");
@@ -100,7 +101,7 @@ async function generate_NewProjectMaker_Container() {
       textarea.placeholder = field;
       newProjectContainer.appendChild(textarea);
     }
-}
+})();
 
 function addProject() {
   let newProject = {};
