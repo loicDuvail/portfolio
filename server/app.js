@@ -132,35 +132,33 @@ app.get("/api/getProjectsColumnNames", (req, res) => {
 
 app.post("/private-api/updateProject", (req, res) => {
   const { updatedProject } = req.body;
-  const {
-    id,
-    project_name,
-    description,
-    what_i_learned,
-    img,
-    git_link,
-    live_demo_link,
-  } = updatedProject;
-  console.log(updatedProject);
+  let query = "UPDATE projects SET ";
 
-  let request = `UPDATE projects SET project_name = "${project_name}",description = "${description}",what_i_learned = "${what_i_learned}",img = "${img}",git_link = "${git_link}",live_demo_link = "${live_demo_link}" WHERE id = ${id}`;
+  for (const key in updatedProject)
+    if (key != "id") query += `${key} = "${updatedProject[key]}",`;
 
-  pool.query(request, (err, response) => {
+  query = query.slice(0, -1) + `WHERE id = ${updatedProject.id}`;
+
+  pool.query(query, (err, response) => {
     if (err) return console.error(err), res.status(500).send({ error: err });
     res.status(200).send({ ok: "project successfuly updated" });
   });
 });
 
 app.post("/private-api/addProject", (req, res) => {
-  const {
-    project_name,
-    description,
-    what_i_learned,
-    img,
-    git_link,
-    live_demo_link,
-  } = req.body;
-  let query = `INSERT INTO projects (project_name, description, what_i_learned, img, git_link, live_demo_link) VALUES ("${project_name}","${description}","${what_i_learned}","${img}","${git_link}","${live_demo_link}")`;
+  const { newProject } = req.body;
+  let query = "INSERT INTO projects ";
+  let columns = "(";
+  let values = "(";
+  for (const key in newProject)
+    if (key != "id") {
+      columns += key + ",";
+      values += `"newProject[key]",`;
+    }
+  columns = columns.slice(0, -1) + ")";
+  values = values.slice(0, -1) + ")";
+  query += columns + " VALUES " + values;
+
   pool.query(query, (err, response) => {
     if (err) return console.error(err), res.status(500).send({ error: err });
     res.send({ ok: "new project added to DB" });

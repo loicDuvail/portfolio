@@ -114,7 +114,7 @@ function addProject() {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(newProject),
+    body: JSON.stringify({ newProject }),
   })
     .then((response) => response.json())
     .then((response) => {
