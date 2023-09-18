@@ -35,7 +35,8 @@ function createProjectHtml(project) {
       const txtArea = document.createElement("textarea");
       txtArea.className = `${key}-textarea`;
       txtArea.placeholder = key;
-      txtArea.innerHTML = project[key].replaceAll("%n", LINE_JUMP);
+      if (project[key])
+        txtArea.innerHTML = project[key].replaceAll("%n", LINE_JUMP);
       projectContainer.appendChild(txtArea);
     }
   }
@@ -47,7 +48,6 @@ function createProjectHtml(project) {
 
 function saveChanges() {
   let projects = projectsContainer.children;
-  console.log(projects);
 
   for (const project of projects) {
     let updatedProject = {};
@@ -93,10 +93,9 @@ logoutBtn.onclick = logout;
   const columns = await fetch("/api/getProjectsColumnNames").then((response) =>
     response.json()
   );
-  console.log(columns);
   if (columns)
     for (const column of columns)
-      if (column.field != "id") {
+      if (column.Field != "id") {
         const textarea = document.createElement("textarea");
         textarea.className = `${column.Field}-textarea`;
         textarea.placeholder = column.Field;
