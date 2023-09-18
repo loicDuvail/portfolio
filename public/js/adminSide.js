@@ -90,15 +90,15 @@ logoutBtn.onclick = logout;
 // add new project
 
 (async function generate_NewProjectMaker_Container() {
-  const fields = await fetch("/api/getProjectsColumnNames").then((response) =>
+  const columns = await fetch("/api/getProjectsColumnNames").then((response) =>
     response.json()
   );
-  console.log(fields);
-  if (fields)
-    for (const field of fields) {
+  console.log(columns);
+  if (columns)
+    for (const column of columns) {
       const textarea = document.createElement("textarea");
-      textarea.className = `${field}-textarea`;
-      textarea.placeholder = field;
+      textarea.className = `${column.Field}-textarea`;
+      textarea.placeholder = column.Field;
       newProjectContainer.appendChild(textarea);
     }
 })();

@@ -142,7 +142,7 @@ app.post("/private-api/updateProject", (req, res) => {
     live_demo_link,
   } = updatedProject;
 
-  let request = `UPDATE projects SET project_name = "${name}",description = "${description}",what_i_learned = "${what_i_learned}",img = "${img}",git_link = "${git_link}",live_demo_link = "${live_demo_link}" WHERE id = ${id}`;
+  let request = `UPDATE projects SET project_name = "${project_name}",description = "${description}",what_i_learned = "${what_i_learned}",img = "${img}",git_link = "${git_link}",live_demo_link = "${live_demo_link}" WHERE id = ${id}`;
 
   pool.query(request, (err, response) => {
     if (err) return console.error(err), res.status(500).send({ error: err });
