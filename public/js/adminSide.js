@@ -3,8 +3,7 @@ const saveBtn = document.getElementById("save-btn");
 const logoutBtn = document.getElementById("logout-btn");
 const addProjectBtn = document.getElementById("add-project-button");
 
-const LINE_JUMP = `
-`;
+const LINE_JUMP = "\n";
 
 // projects loading ans displaying
 
@@ -49,8 +48,8 @@ function createProjectHtml(project) {
   let liveDemoLinkContainer = document.createElement("textarea");
 
   nameContainer.innerText = project_name;
-  descriptionContainer.innerText = description.replaceAll("%n", LINE_JUMP);
-  whatILearnedContainer.innerText = what_i_learned.replaceAll("%n", LINE_JUMP);
+  descriptionContainer.innerHTML = description.replaceAll("%n", LINE_JUMP);
+  whatILearnedContainer.innerHTML = what_i_learned.replaceAll("%n", LINE_JUMP);
   imgLinkContainer.innerText = img;
   gitLinkContainer.innerText = git_link;
   liveDemoLinkContainer.innerText = live_demo_link;
@@ -86,7 +85,10 @@ function saveChanges() {
     let { id } = project;
 
     let name = nameContainer.value;
-    let description = descriptionContainer.value.replaceAll(LINE_JUMP, "%n");
+    let description = descriptionContainer.value.replaceAll(
+      LINE_JUMP,
+      "%n"
+    ).replaceAll;
     let what_i_learned = whatILearnedContainer.value.replaceAll(
       LINE_JUMP,
       "%n"
