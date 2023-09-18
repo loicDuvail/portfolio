@@ -31,7 +31,7 @@ function createProjectHtml(project) {
   projectContainer.id = project.id + "-container";
 
   for (const key in project) {
-    if (key != id) {
+    if (key != "id") {
       const txtArea = document.createElement("textarea");
       txtArea.className = `${key}-textarea`;
       txtArea.placeholder = key;
