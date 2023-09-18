@@ -105,6 +105,18 @@ app.get("/api/getProjects", (req, res) => {
   });
 });
 
+app.get("/api/getProjectsColumnNames", (req, res) => {
+  pool.query(`DESCRIBE projects`, (error, response) => {
+    if (!error) return res.send(response[0].Field).status(200);
+    res.send({ error }).status(500);
+    console.log(
+      error +
+        `
+    `
+    );
+  });
+});
+
 // app.get("/api/getProject", (req, res) => {
 //   const { project_id } = req.cookies;
 //   if (!project_id) return res.send({ error: "project id not specified" });
@@ -139,9 +151,15 @@ app.post("/private-api/updateProject", (req, res) => {
 });
 
 app.post("/private-api/addProject", (req, res) => {
-  const { name, description, what_i_learned, img, git_link, live_demo_link } =
-    req.body;
-  let query = `INSERT INTO projects (project_name, description, what_i_learned, img, git_link, live_demo_link) VALUES ("${name}","${description}","${what_i_learned}","${img}","${git_link}","${live_demo_link}")`;
+  const {
+    project_name,
+    description,
+    what_i_learned,
+    img,
+    git_link,
+    live_demo_link,
+  } = req.body;
+  let query = `INSERT INTO projects (project_name, description, what_i_learned, img, git_link, live_demo_link) VALUES ("${project_name}","${description}","${what_i_learned}","${img}","${git_link}","${live_demo_link}")`;
   pool.query(query, (err, response) => {
     if (err) return console.error(err), res.status(500).send({ error: err });
     res.send({ ok: "new project added to DB" });

@@ -1,4 +1,5 @@
 const projectsContainer = document.getElementById("projects-container");
+const newProjectContainer = document.getElementById("new-project-container");
 const saveBtn = document.getElementById("save-btn");
 const logoutBtn = document.getElementById("logout-btn");
 const addProjectBtn = document.getElementById("add-project-button");
@@ -26,40 +27,18 @@ function displayProjects(projects) {
 }
 
 function createProjectHtml(project) {
-  const {
-    id,
-    project_name,
-    description,
-    what_i_learned,
-    img,
-    git_link,
-    live_demo_link,
-  } = project;
-
   let projectContainer = document.createElement("div");
-  projectContainer.classList.add("project");
-  projectContainer.id = id;
+  projectContainer.id = project.id + "-container";
 
-  let nameContainer = document.createElement("textarea");
-  let descriptionContainer = document.createElement("textarea");
-  let whatILearnedContainer = document.createElement("textarea");
-  let imgLinkContainer = document.createElement("textarea");
-  let gitLinkContainer = document.createElement("textarea");
-  let liveDemoLinkContainer = document.createElement("textarea");
-
-  nameContainer.innerText = project_name;
-  descriptionContainer.innerHTML = description.replaceAll("%n", LINE_JUMP);
-  whatILearnedContainer.innerHTML = what_i_learned.replaceAll("%n", LINE_JUMP);
-  imgLinkContainer.innerText = img;
-  gitLinkContainer.innerText = git_link;
-  liveDemoLinkContainer.innerText = live_demo_link;
-
-  projectContainer.appendChild(nameContainer);
-  projectContainer.appendChild(descriptionContainer);
-  projectContainer.appendChild(whatILearnedContainer);
-  projectContainer.appendChild(imgLinkContainer);
-  projectContainer.appendChild(gitLinkContainer);
-  projectContainer.appendChild(liveDemoLinkContainer);
+  for (const key in project) {
+    if (key != id) {
+      const txtArea = document.createElement("textarea");
+      txtArea.className = `${key}-textarea`;
+      txtArea.placeholder = key;
+      txtArea.innerHTML = project[key].replaceAll("%n", LINE_JUMP);
+      projectContainer.appendChild(txtArea);
+    }
+  }
 
   return projectContainer;
 }
@@ -70,42 +49,14 @@ function saveChanges() {
   let projects = projectsContainer.children;
   console.log(projects);
 
-  for (let i = 0; i < projects.length; i++) {
-    let project = projects[i];
+  for (const project of projects) {
+    let updatedProject = {};
 
-    let { children } = project;
-
-    let nameContainer = children[0];
-    let descriptionContainer = children[1];
-    let whatILearnedContainer = children[2];
-    let imgLinkContainer = children[3];
-    let gitLinkContainer = children[4];
-    let liveDemoLinkContainer = children[5];
-
-    let { id } = project;
-
-    let name = nameContainer.value;
-    let description = descriptionContainer.value.replaceAll(
-      LINE_JUMP,
-      "%n"
-    ).replaceAll;
-    let what_i_learned = whatILearnedContainer.value.replaceAll(
-      LINE_JUMP,
-      "%n"
-    );
-    let img = imgLinkContainer.value;
-    let git_link = gitLinkContainer.value;
-    let live_demo_link = liveDemoLinkContainer.value;
-
-    let updatedProject = {
-      id,
-      name,
-      description,
-      what_i_learned,
-      img,
-      git_link,
-      live_demo_link,
-    };
+    updatedProject.id = project.id.replace("-container", "");
+    for (const textarea of project.children) {
+      updatedProject[textarea.className.replace("-textarea", "")] =
+        textarea.value.replaceAll(LINE_JUMP, "%n");
+    }
 
     fetch("/private-api/updateProject", {
       method: "POST",
@@ -138,46 +89,36 @@ logoutBtn.onclick = logout;
 
 // add new project
 
-function getValues(htmlArr) {
-  const values = [];
-  for (const html of htmlArr) {
-    values.push(html.value);
-  }
-  return values;
+async function generate_NewProjectMaker_Container() {
+  const fields = await fetch("/api/getProjectsColumnNames").then((response) =>
+    response.json()
+  );
+  if (fields)
+    for (const field of fields) {
+      const textarea = document.createElement("textarea");
+      textarea.className = `${field}-textarea`;
+      textarea.placeholder = field;
+      newProjectContainer.appendChild(textarea);
+    }
 }
 
 function addProject() {
-  const [name, description, what_i_learned, img, git_link, live_demo_link] =
-    getValues(document.getElementById("new-project-container").children);
-
-  if (
-    !name ||
-    !description ||
-    !what_i_learned ||
-    !img ||
-    !git_link ||
-    !live_demo_link
-  )
-    return alert("missing input field");
-
+  let newProject = {};
+  for (const textarea of newProjectContainer.children) {
+    newProject[textarea.className.replace("-textarea", "")] =
+      textarea.value.replaceAll(LINE_JUMP, "%n");
+  }
   fetch("/private-api/addProject", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      name,
-      description,
-      what_i_learned,
-      img,
-      git_link,
-      live_demo_link,
-    }),
+    body: JSON.stringify(newProject),
   })
     .then((response) => response.json())
     .then((response) => {
-      if (response.error) throw response.error;
-      alert(response.ok);
+      if (response.error) return console.log(response.error);
+      alert(`${newProject.project_name} successfuly added to DB`);
     });
 }
 
