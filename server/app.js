@@ -10,6 +10,7 @@ const pool = require("./modules/DB-connection");
 const SHA256 = require("./modules/SHA256");
 const Sessions = require("./modules/sessions");
 const auth = require("./modules/auth");
+const FailedCnxHandler = require("./modules/failedCnxHandler");
 const { v4 } = require("uuid");
 Sessions.ageSessions(30000);
 
@@ -147,17 +148,48 @@ app.post("/private-api/addProject", (req, res) => {
   });
 });
 
-const TWO_HOURS_ms = 7200_000;
+const FIVE_MINUTES_ms = 300_000;
+const failedCnxHandler = new FailedCnxHandler(
+  5,
+  FIVE_MINUTES_ms,
+  FIVE_MINUTES_ms
+);
+failedCnxHandler.onMaxFailedCnx = () =>
+  transporter.sendMail({
+    from: "portfolio.automated.mailer@gmail.com",
+    to: "duvailloic1@gmail.com",
+    subject: "TOO MANY FAILED ATTEMPS ON ADMIN_SIDE",
+    text: failedCnxHandler.failedCnxs
+      .map(
+        (failedCnx) =>
+          `{
+          date: ${new Date(failedCnx.UTC_ms).toLocaleString("fr")}, 
+          data: {
+            passwordAttempt: "${failedCnx.data.passwordAttempt}"
+            }
+          }`
+      )
+      .toString(),
+  });
+const ONE_DAY_ms = 3600 * 1000 * 24;
 app.post("/api/login", (req, res) => {
+  if (!failedCnxHandler.canTryAgain())
+    return res.send({
+      error: `too many failed attemps, wait for ${failedCnxHandler.getRemainingBlockTime()}`,
+    });
+
   const { password } = req.body;
   if (
     SHA256(password) ===
     "aec4fb61a155929f2c270df1842de97feda69ac7d5ec68fadbd4275c22a627df"
   ) {
-    const sessionId = Sessions.createSession(v4(), TWO_HOURS_ms);
+    const sessionId = Sessions.createSession(v4(), ONE_DAY_ms);
     res.cookie("session_id", sessionId);
     res.status(200).send({ ok: "successfuly logged in as admin" });
+    //reset failed attemps count
+    failedCnxHandler.clearFailedCnx();
   } else {
+    failedCnxHandler.addFailedAttemps({ passwordAttempt: password });
     res.status(401).send({ error: "Forbidden, wrong password" });
   }
 });
