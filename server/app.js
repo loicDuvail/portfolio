@@ -18,7 +18,7 @@ const app = express();
 app.use(
   express.json(),
   cookieParser(),
-  auth(["/adminSide/connected", "/private-api"], ["/adminSide", false])
+  auth(["/adminSide/connected", "/private-api"], ["/adminSide", null])
 );
 
 const serve = serveFnGen(app);
@@ -43,10 +43,28 @@ app.get("/", (req, res) =>
   res.sendFile(path.join(__dirname, "../public/build/index.html"))
 );
 
-// app.get("/project/:id", (req, res) => {
-//   res.cookie("project_id", req.params.id, { sameSite: true });
-//   res.sendFile(path.join(__dirname, "../public/html/project.html"));
-// });
+const views = [];
+setInterval(() => {
+  let text = "Report:\n\n";
+  views.forEach((view) => {
+    text += `id: ${view.id}, count: ${view.count}\n`;
+  });
+  transporter.sendMail({
+    from: "portfolio.automated.mailer@gmail.com",
+    to: "duvailloic1@gmail.com",
+    text,
+    subject: "Mail Report",
+  });
+}, 1000 * 3600 * 24);
+
+app.get("/px/:id", (req, res) => {
+  const { id } = req.params;
+
+  let view = views.find((view) => view.id == id);
+  if (view) view.count += 1;
+  else views.push({ id, count: 1 });
+  res.sendFile(path.join(__dirname, "./1x1.png"));
+});
 
 app.get("/adminSide", (req, res) =>
   res.sendFile(path.join(__dirname, "../public/html/login.html"))
@@ -116,19 +134,6 @@ app.get("/api/getProjectsColumnNames", (req, res) => {
     );
   });
 });
-
-// app.get("/api/getProject", (req, res) => {
-//   const { project_id } = req.cookies;
-//   if (!project_id) return res.send({ error: "project id not specified" });
-
-//   pool.query(
-//     `SELECT * FROM projects WHERE id = "${project_id}"`,
-//     (error, response) => {
-//       if (error) return res.send({ error }), console.log(error);
-//       res.send(response[0]);
-//     }
-//   );
-// });
 
 app.post("/private-api/updateProject", (req, res) => {
   const { updatedProject } = req.body;
