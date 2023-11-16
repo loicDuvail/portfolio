@@ -8,33 +8,33 @@ const passwordInput = document.getElementById("password-input");
 passwordInput.focus();
 
 eyeContainer.onclick = () => {
-    passwordVisible = !passwordVisible;
-    if (passwordVisible) {
-        eyeClosedSvg.style.display = "none";
-        eyeOpenSvg.style.display = "block";
-        passwordInput.type = "text";
-    } else {
-        eyeClosedSvg.style.display = "block";
-        eyeOpenSvg.style.display = "none";
-        passwordInput.type = "password";
-    }
+  passwordVisible = !passwordVisible;
+  if (passwordVisible) {
+    eyeClosedSvg.style.display = "none";
+    eyeOpenSvg.style.display = "block";
+    passwordInput.type = "text";
+  } else {
+    eyeClosedSvg.style.display = "block";
+    eyeOpenSvg.style.display = "none";
+    passwordInput.type = "password";
+  }
 };
 
 function login(password) {
-    fetch("/api/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ password }),
-    })
-        .then((response) => response.json())
-        .then((response) => {
-            if (response.error) return console.log(response.error);
-            window.location.replace("/adminSide/connected");
-        });
+  fetch("/api/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ password }),
+  })
+    .then((response) => response.json())
+    .then((response) => {
+      if (response.error) return console.log(response.error);
+      window.location.replace("/adminSide/connected");
+    });
 }
 
 passwordInput.addEventListener("keydown", (key) => {
-    if (key.code === "Enter") login(passwordInput.value);
+  if (key.keyCode === 13) login(passwordInput.value);
 });
