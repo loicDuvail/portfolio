@@ -45,18 +45,6 @@ app.get("/", (req, res) =>
 
 // -----TEMP-----
 const views = [];
-setInterval(() => {
-  let text = "Report:\n\n";
-  views.forEach((view) => {
-    text += `id: ${view.id}, count: ${view.count}\n`;
-  });
-  transporter.sendMail({
-    from: "portfolio.automated.mailer@gmail.com",
-    to: "duvailloic1@gmail.com",
-    text,
-    subject: "Mail Report",
-  });
-}, 1000 * 3600 * 24);
 
 app.get("/px/:id", (req, res) => {
   const { id } = req.params;
