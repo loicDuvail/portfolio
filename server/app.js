@@ -43,6 +43,7 @@ app.get("/", (req, res) =>
   res.sendFile(path.join(__dirname, "../public/build/index.html"))
 );
 
+// -----TEMP-----
 const views = [];
 setInterval(() => {
   let text = "Report:\n\n";
@@ -65,6 +66,8 @@ app.get("/px/:id", (req, res) => {
   else views.push({ id, count: 1 });
   res.sendFile(path.join(__dirname, "./1x1.png"));
 });
+
+//----END-TEMP----
 
 app.get("/adminSide", (req, res) =>
   res.sendFile(path.join(__dirname, "../public/html/login.html"))
@@ -133,6 +136,10 @@ app.get("/api/getProjectsColumnNames", (req, res) => {
     `
     );
   });
+});
+
+app.get("/private-api/getMailViews", (req, res) => {
+  res.send(views);
 });
 
 app.post("/private-api/updateProject", (req, res) => {
