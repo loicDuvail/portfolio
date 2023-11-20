@@ -165,6 +165,17 @@ app.post("/private-api/addProject", (req, res) => {
   });
 });
 
+app.delete("/private-api/deleteProject", (req, res) => {
+  const { id } = req.body;
+  pool.query(`DELETE FROM projects WHERE id = ${id}`, (err, result) => {
+    if (err)
+      res.status(500).send({
+        msg: `internal server error, couldn't delete from projects where id = ${id}.`,
+      });
+    res.send({ msg: `successful deletion for id = ${id}` });
+  });
+});
+
 const FIVE_MINUTES_ms = 300_000;
 const failedCnxHandler = new FailedCnxHandler(
   5,

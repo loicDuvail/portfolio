@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+:root{
+    --highlight-color:#f7ee40;
+    --footer_height:70px;
+    --footer_font_color:rgb(54, 54, 54);
+}
+
+body{
+    height: 100%;
+    width: 100dvw;
+    margin:0;
+    font-family: "Poppins";
+}
+.project-container{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 10px;
+}
+#add-project-btn{
+    margin-bottom: var(--footer_height);
+}
+
+#footer{
+    height: var(--footer_height);
+    width: 100%;
+    box-sizing: border-box;
+    position: fixed;
+    bottom: 0;
+
+    display: flex;
+    align-items: center;
+    padding: 0 25px;
+    justify-content: space-between;
+
+    background-color: var(--highlight-color);
+    color: var(--footer_font_color);
+    vertical-align:middle;
+}
+#footer>p{
+    transform: translate(0,0);
+}
+
+#delete-confirm-pop{
+    padding: 20px;
+    width: fit-content;
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid grey;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+#delete-confirm-pop>p{
+    margin: 0;
+    margin-bottom: 10px;
+}
+#answer{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+.btn{
+    cursor: pointer;
+}
+.hidden{
+    display: none;
+}
+.delete-btn{
+    cursor: pointer;
+    width: fit-content;
+}
